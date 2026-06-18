@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Daftar Pesanan JadiJajan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+    /* ==================================================
+    JADIJAJAN GLASSMORPHISM UI
+    Soft Pastel + Modern Dashboard
+    ================================================== */
+
+    :root {
+        --glass-bg: rgba(255,255,255,0.28);
+        --glass-bg-strong: rgba(255,255,255,0.42);
+        --glass-border: rgba(255,255,255,0.35);
+
+        --text-main: #374151;
+        --text-soft: #6b7280;
+
+        --shadow-sm: 0 4px 12px rgba(0,0,0,.05);
+        --shadow-md: 0 8px 24px rgba(0,0,0,.08);
+        --shadow-lg: 0 16px 40px rgba(0,0,0,.12);
+
+        --radius-sm: 14px;
+        --radius-md: 20px;
+        --radius-lg: 28px;
+
+        --gradient-primary:
+            linear-gradient(
+                135deg,
+                #7c9cf5,
+                #9f7aea
+            );
+
+        --gradient-success:
+            linear-gradient(
+                135deg,
+                #34d399,
+                #10b981
+            );
+
+        --gradient-danger:
+            linear-gradient(
+                135deg,
+                #fb7185,
+                #f43f5e
+            );
+
+        --gradient-copy:
+            linear-gradient(
+                135deg,
+                #60a5fa,
+                #818cf8
+            );
+    }
+
+    /* ==================================================
+    GLOBAL
+    ================================================== */
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        min-height: 100%;
+    }
+
+    body {
+        font-family:
+            "Segoe UI",
+            system-ui,
+            sans-serif;
+
+        color: var(--text-main);
+
+        background:
+            radial-gradient(circle at top left,
+                rgba(255, 192, 203, .35),
+                transparent 35%),
+
+            radial-gradient(circle at top right,
+                rgba(173, 216, 230, .35),
+                transparent 35%),
+
+            radial-gradient(circle at bottom center,
+                rgba(255, 250, 205, .35),
+                transparent 35%),
+
+            linear-gradient(
+                135deg,
+                #fff7fb 0%,
+                #f2f8ff 35%,
+                #f4fff8 70%,
+                #fff9ee 100%
+            );
+
+        background-attachment: fixed;
+        overflow-x: hidden;
+    }
+
+    /* ==================================================
+    FLOATING ORBS
+    ================================================== */
+
+    .bg-orb {
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+        filter: blur(90px);
+    }
+
+    .orb-1 {
+        width: 320px;
+        height: 320px;
+
+        top: 5%;
+        left: 3%;
+
+        background: rgba(255,182,193,.45);
+
+        animation: floatOrb1 12s ease-in-out infinite;
+    }
+
+    .orb-2 {
+        width: 380px;
+        height: 380px;
+
+        top: 18%;
+        right: 4%;
+
+        background: rgba(173,216,230,.45);
+
+        animation: floatOrb2 16s ease-in-out infinite;
+    }
+
+    .orb-3 {
+        width: 300px;
+        height: 300px;
+
+        bottom: 0;
+        left: 40%;
+
+        background: rgba(152,251,152,.35);
+
+        animation: floatOrb3 20s ease-in-out infinite;
+    }
+
+    @keyframes floatOrb1 {
+        0%,100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-35px);
+        }
+    }
+
+    @keyframes floatOrb2 {
+        0%,100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(25px);
+        }
+    }
+
+    @keyframes floatOrb3 {
+        0%,100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    /* ==================================================
+    HEADER
+    ================================================== */
+
+    .floating-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+
+        padding: 22px 28px;
+
+        border-radius: var(--radius-lg);
+
+        background: var(--glass-bg);
+
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+
+        border: 1px solid var(--glass-border);
+
+        box-shadow: var(--shadow-md);
+    }
+
+    .floating-header h1 {
+        margin: 0;
+        font-weight: 800;
+        color: #374151;
+    }
+
+    .glass-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 10px 18px;
+
+        border-radius: 999px;
+
+        background: rgba(255,255,255,.4);
+
+        backdrop-filter: blur(12px);
+
+        border: 1px solid rgba(255,255,255,.4);
+
+        font-weight: 600;
+    }
+
+    /* ==================================================
+    CARD
+    ================================================== */
+
+    .component-box {
+        position: relative;
+
+        background: var(--glass-bg);
+
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+
+        border: 1px solid var(--glass-border);
+
+        border-radius: var(--radius-md);
+
+        padding: 24px;
+
+        margin-bottom: 24px;
+
+        box-shadow: var(--shadow-md);
+
+        animation: fadeUp .5s ease;
+        transition: .25s ease;
+    }
+
+    .component-box:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ==================================================
+    SECTION HEADER
+    ================================================== */
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .section-title h5 {
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .section-icon {
+        width: 46px;
+        height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        background: rgba(255,255,255,.4);
+
+        backdrop-filter: blur(10px);
+
+        font-size: 1.15rem;
+    }
+
+    .glass-divider {
+        margin: 18px 0;
+        border-color: rgba(255,255,255,.35);
+    }
+
+    /* ==================================================
+    BUTTON
+    ================================================== */
+
+    .btn {
+        border-radius: 14px;
+        transition: .2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn-modern {
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 10px 16px;
+    }
+
+    .btn-copy {
+        background: var(--gradient-copy);
+    }
+
+    .btn-reset {
+        background: var(--gradient-danger);
+    }
+
+    .btn-primary {
+        border: none;
+        background: var(--gradient-primary);
+    }
+
+    .btn-success {
+        border: none;
+        background: var(--gradient-success);
+    }
+
+    .btn-outline-secondary {
+        background: rgba(255,255,255,.25);
+        backdrop-filter: blur(10px);
+
+        border: 1px solid rgba(255,255,255,.35);
+    }
+
+    .btn-outline-secondary:hover {
+        background: rgba(255,255,255,.55);
+    }
+
+    .btn-outline-primary,
+    .btn-outline-danger {
+        border: none;
+    }
+
+    /* ==================================================
+    FORM
+    ================================================== */
+
+    .form-control {
+        border-radius: 14px;
+
+        border: 1px solid rgba(255,255,255,.35);
+
+        background: rgba(255,255,255,.55);
+
+        backdrop-filter: blur(10px);
+
+        padding: 12px 14px;
+    }
+
+    .form-control:focus {
+        background: rgba(255,255,255,.8);
+
+        border-color: #93c5fd;
+
+        box-shadow:
+            0 0 0 .25rem
+            rgba(147,197,253,.25);
+    }
+
+    .glass-input {
+        background: rgba(255,255,255,.55);
+    }
+
+    #menu-buttons input,
+    #address-buttons input {
+        background: rgba(255,255,255,.55);
+        backdrop-filter: blur(10px);
+
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.35);
+    }
+
+    /* ==================================================
+    TABLE
+    ================================================== */
+
+    .table-wrapper {
+        overflow: hidden;
+        border-radius: 18px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        background: rgba(255,255,255,.55);
+        backdrop-filter: blur(10px);
+
+        border-bottom: none;
+
+        color: var(--text-main);
+
+        font-weight: 700;
+    }
+
+    .table tbody td {
+        background: rgba(255,255,255,.18);
+    }
+
+    .table tbody tr {
+        transition: .2s ease;
+    }
+
+    .table tbody tr:hover {
+        transform: scale(1.01);
+    }
+
+    .table > :not(caption) > * > * {
+        border-color: rgba(255,255,255,.25);
+    }
+
+    .table-responsive {
+        border-radius: 18px;
+    }
+
+    /* ==================================================
+    BADGE
+    ================================================== */
+
+    .badge {
+        border-radius: 999px;
+        padding: .5rem .85rem;
+        font-weight: 600;
+    }
+
+    .bg-primary {
+        background: var(--gradient-primary) !important;
+    }
+
+    .bg-success {
+        background: var(--gradient-success) !important;
+    }
+
+    /* ==================================================
+    EMPTY STATE
+    ================================================== */
+
+    #empty-state {
+        color: var(--text-soft);
+    }
+
+    #empty-state i {
+        opacity: .7;
+    }
+
+    /* ==================================================
+    MODAL
+    ================================================== */
+
+    .glass-modal,
+    .modal-content {
+        background: rgba(255,255,255,.45);
+
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+
+        border: 1px solid rgba(255,255,255,.35);
+
+        border-radius: 24px;
+
+        box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header,
+    .modal-footer {
+        border-color: rgba(255,255,255,.25);
+    }
+
+    /* ==================================================
+    SCROLLBAR
+    ================================================== */
+
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(255,255,255,.2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,.5);
+        border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,.8);
+    }
+
+    /* ==================================================
+    RESPONSIVE
+    ================================================== */
+
+    @media (max-width: 768px) {
+
+        .floating-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .floating-header h1 {
+            font-size: 1.7rem;
+        }
+
+        .component-box {
+            padding: 18px;
+        }
+
+        .section-title {
+            align-items: flex-start;
+        }
+
+        .glass-badge {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-modern {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+
+        .container {
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+
+        .floating-header {
+            padding: 18px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+        }
+    }
+    </style>
+</head>
+<body>
+
+<body>
+
+    <!-- Floating Background -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <div class="container py-5 position-relative" style="max-width: 900px;">
+
+        <!-- Header -->
+        <div class="floating-header mb-4">
+            <div>
+                <h1 class="mb-1">🍱 JadiJajan</h1>
+                <div class="text-muted">
+                    by Monic
+                </div>
+            </div>
+
+            <div class="glass-badge">
+                <i class="bi bi-cart-check me-1"></i>
+                <span id="order-counter">0 Pesanan</span>
+            </div>
+        </div>
+
+        <!-- Menu -->
+        <div id="menu-bar-container" class="component-box">
+            <div class="section-title">
+                <div class="section-icon">
+                    <i class="bi bi-egg-fried"></i>
+                </div>
+
+                <div>
+                    <h5 class="mb-0">Pilihan Menu</h5>
+                    <small class="text-muted">
+                        Silakan pilih menu atau klik ikon pensil untuk mengubah nama menu.
+                    </small>
+                </div>
+            </div>
+
+            <hr class="glass-divider">
+
+            <div id="menu-buttons" class="d-flex flex-wrap gap-2">
+                <span class="text-muted">Memuat menu...</span>
+            </div>
+        </div>
+
+        <!-- Alamat -->
+        <div id="address-bar-container" class="component-box">
+            <div class="section-title">
+                <div class="section-icon">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+
+                <div>
+                    <h5 class="mb-0">Alamat / Jenjang</h5>
+                    <small class="text-muted">
+                        Pilih alamat tujuan pengiriman.
+                    </small>
+                </div>
+            </div>
+
+            <hr class="glass-divider">
+
+            <div id="address-buttons" class="d-flex flex-wrap gap-2">
+                <span class="text-muted">Memuat alamat...</span>
+            </div>
+        </div>
+
+        <!-- Daftar Pesanan -->
+        <div id="order-list-container" class="component-box">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+                <div class="section-title m-0">
+                    <div class="section-icon">
+                        <i class="bi bi-list-ul"></i>
+                    </div>
+
+                    <div>
+                        <h5 class="mb-0">Daftar Pesanan</h5>
+                        <small class="text-muted">
+                            Data pesanan yang telah diinput.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button id="btn-copy"
+                        class="btn btn-modern btn-copy">
+
+                        <i class="bi bi-copy me-1"></i>
+                        Salin Semua
+                    </button>
+
+                    <button id="btn-reset"
+                        class="btn btn-modern btn-reset">
+
+                        <i class="bi bi-trash me-1"></i>
+                        Reset Data
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle mb-0">
+
+                        <thead>
+                            <tr>
+                                <th style="width:60px">No</th>
+                                <th>Nama</th>
+                                <th>Menu</th>
+
+                                <th>
+                                    Alamat
+
+                                    <button
+                                        id="btn-sort-address"
+                                        class="btn btn-sm p-0 ms-1 border-0 shadow-none">
+
+                                        <i class="bi bi-arrow-down-up"></i>
+
+                                    </button>
+                                </th>
+
+                                <th style="width:90px" class="text-center">
+                                    Jumlah
+                                </th>
+
+                                <th style="width:80px" class="text-center">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+
+                    </table>
+
+                    <div id="empty-state"
+                        class="text-center text-muted py-5">
+
+                        <i class="bi bi-basket3 display-5 d-block mb-3"></i>
+
+                        Belum ada pesanan terinput.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade"
+        id="inputModal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="inputModalLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content glass-modal">
+
+                <div class="modal-header border-0">
+
+                    <h5 class="modal-title"
+                        id="inputModalLabel">
+
+                        Lengkapi Detail Pesanan
+
+                    </h5>
+
+                    <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <form id="order-form">
+
+                        <div class="mb-3">
+
+                            <label
+                                for="customer-name"
+                                class="form-label">
+
+                                Nama Pemesan
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control glass-input"
+                                id="customer-name"
+                                required
+                                placeholder="Masukkan nama...">
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label
+                                for="order-qty"
+                                class="form-label">
+
+                                Jumlah
+
+                            </label>
+
+                            <input
+                                type="number"
+                                class="form-control glass-input"
+                                id="order-qty"
+                                required
+                                min="1"
+                                value="1">
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="modal-footer border-0">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+
+                        Batal
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        form="order-form"
+                        class="btn btn-primary">
+
+                        Tambah Pesanan
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <script>
+        // ==========================================
+        // 1. STATE & KONSTANTA UTAMA
+        // ==========================================
+        const STORAGE_KEY_MENUS = 'app_menus';
+        const STORAGE_KEY_ORDERS = 'app_orders';
+
+        let menuState = [];
+        let ordersState = [];
+        let activeMenuId = null;
+
+        const addressData = [
+            { id: 'SD', text: 'SD' },
+            { id: 'SMP', text: 'SMP' },
+            { id: 'SMA', text: 'SMA' }
+        ];
+        let customAddressText = ""; 
+        let activeAddressId = null; 
+
+        let addressSortOrder = 'none';
+        let bootstrapInputModal = null;
+
+        // ==========================================
+        // 2. INITIALIZATION & GLOBAL EVENTS
+        // ==========================================
+        function initApp() {
+            const savedMenus = localStorage.getItem(STORAGE_KEY_MENUS);
+            if (savedMenus) {
+                menuState = JSON.parse(savedMenus);
+            } else {
+                menuState = [{ id: 1, text: "" }, { id: 2, text: "" }, { id: 3, text: "" }, { id: 4, text: "" }];
+                saveMenusToStorage();
+            }
+
+            const savedOrders = localStorage.getItem(STORAGE_KEY_ORDERS);
+            if (savedOrders) {
+                ordersState = JSON.parse(savedOrders);
+            }
+
+            bootstrapInputModal = new bootstrap.Modal(document.getElementById('inputModal'));
+
+            const orderForm = document.getElementById('order-form');
+            orderForm.addEventListener('submit', handleFormSubmit);
+
+            const btnSortAddress = document.getElementById('btn-sort-address');
+            btnSortAddress.addEventListener('click', toggleAddressSort);
+
+            // [ 5. Hubungkan Event Tombol Reset Global ]
+            const btnReset = document.getElementById('btn-reset');
+            btnReset.addEventListener('click', handleGlobalReset);
+
+            // [ 6. Hubungkan Event Tombol Salin Ringkasan ]
+            const btnCopy = document.getElementById('btn-copy');
+            btnCopy.addEventListener('click', handleCopyOrders);
+
+            renderMenuButtons();
+            renderAddressButtons();
+            renderOrderList();
+        }
+
+        function saveMenusToStorage() {
+            localStorage.setItem(STORAGE_KEY_MENUS, JSON.stringify(menuState));
+        }
+
+        function saveOrdersToStorage() {
+            localStorage.setItem(STORAGE_KEY_ORDERS, JSON.stringify(ordersState));
+        }
+
+        // ==========================================
+        // 3. LOGIKA & RENDER TOMBOL MENU
+        // ==========================================
+        function renderMenuButtons() {
+            const menuContainer = document.getElementById('menu-buttons');
+            menuContainer.innerHTML = '';
+
+            menuState.forEach(menu => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'd-inline-block position-relative me-2 mb-2';
+
+                if (menu.text.trim() === "") {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'form-control form-control-sm text-center';
+                    input.placeholder = `[+] Isi Menu ${menu.id}`;
+                    input.style.width = '140px';
+
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') handleSaveMenu(menu.id, input.value);
+                    });
+                    input.addEventListener('blur', () => {
+                        if (input.value.trim() !== "") handleSaveMenu(menu.id, input.value);
+                    });
+
+                    wrapper.appendChild(input);
+                } else {
+                    const btn = document.createElement('button');
+                    const isSelected = activeMenuId === menu.id;
+                    btn.className = `btn btn-sm text-start pe-5 ${isSelected ? 'btn-primary' : 'btn-outline-secondary'}`;
+                    btn.style.minWidth = '140px';
+                    btn.innerHTML = `<i class="bi bi-circle-fill small me-2" style="font-size: 8px;"></i>${menu.text}`;
+                    
+                    btn.addEventListener('click', () => handleSelectMenu(menu.id));
+
+                    const editIcon = document.createElement('span');
+                    editIcon.className = `position-absolute top-50 end-0 translate-middle-y me-2 badge rounded-pill bg-light text-dark border`;
+                    editIcon.style.cursor = 'pointer';
+                    editIcon.innerHTML = '<i class="bi bi-pencil" style="font-size: 11px;"></i>';
+                    
+                    editIcon.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        handleEditMenuTrigger(menu.id);
+                    });
+
+                    wrapper.appendChild(btn);
+                    wrapper.appendChild(editIcon);
+                }
+                menuContainer.appendChild(wrapper);
+            });
+        }
+
+        function handleSaveMenu(id, newText) {
+            const targetMenu = menuState.find(m => m.id === id);
+            if (targetMenu) {
+                targetMenu.text = newText.trim();
+                saveMenusToStorage();
+                renderMenuButtons();
+            }
+        }
+
+        function handleEditMenuTrigger(id) {
+            const targetMenu = menuState.find(m => m.id === id);
+            if (targetMenu) {
+                if (activeMenuId === id) activeMenuId = null;
+                targetMenu.text = "";
+                renderMenuButtons();
+            }
+        }
+
+        function handleSelectMenu(id) {
+            if (activeMenuId === id) {
+                activeMenuId = null;
+            } else {
+                activeMenuId = id;
+            }
+            renderMenuButtons();
+            checkWorkflowTrigger();
+        }
+
+        // ==========================================
+        // 4. LOGIKA & RENDER TOMBOL ALAMAT
+        // ==========================================
+        function renderAddressButtons() {
+            const addressContainer = document.getElementById('address-buttons');
+            addressContainer.innerHTML = '';
+
+            addressData.forEach(addr => {
+                const btn = document.createElement('button');
+                const isSelected = activeAddressId === addr.id;
+                btn.className = `btn btn-sm me-2 mb-2 ${isSelected ? 'btn-success' : 'btn-outline-secondary'}`;
+                btn.innerText = addr.text;
+                
+                btn.addEventListener('click', () => handleSelectAddress(addr.id));
+                addressContainer.appendChild(btn);
+            });
+
+            const customWrapper = document.createElement('div');
+            customWrapper.className = 'd-inline-block position-relative mb-2';
+
+            if (customAddressText.trim() === "") {
+                const inputCustom = document.createElement('input');
+                inputCustom.type = 'text';
+                inputCustom.className = 'form-control form-control-sm text-center';
+                inputCustom.placeholder = '[+] Alamat Lain';
+                inputCustom.style.width = '140px';
+
+                inputCustom.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') handleSaveCustomAddress(inputCustom.value);
+                });
+                inputCustom.addEventListener('blur', () => {
+                    if (inputCustom.value.trim() !== "") handleSaveCustomAddress(inputCustom.value);
+                });
+
+                customWrapper.appendChild(inputCustom);
+            } else {
+                const btnCustom = document.createElement('button');
+                const isSelected = activeAddressId === 'CUSTOM';
+                btnCustom.className = `btn btn-sm text-start pe-5 ${isSelected ? 'btn-success' : 'btn-outline-secondary'}`;
+                btnCustom.style.minWidth = '140px';
+                btnCustom.innerHTML = `<i class="bi bi-geo-fill small me-2" style="font-size: 10px;"></i>${customAddressText}`;
+
+                btnCustom.addEventListener('click', () => handleSelectAddress('CUSTOM'));
+
+                const editIconCustom = document.createElement('span');
+                editIconCustom.className = `position-absolute top-50 end-0 translate-middle-y me-2 badge rounded-pill bg-light text-dark border`;
+                editIconCustom.style.cursor = 'pointer';
+                editIconCustom.innerHTML = '<i class="bi bi-pencil" style="font-size: 11px;"></i>';
+
+                editIconCustom.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleEditAddressTrigger();
+                });
+
+                customWrapper.appendChild(btnCustom);
+                customWrapper.appendChild(editIconCustom);
+            }
+
+            addressContainer.appendChild(customWrapper);
+        }
+
+        function handleSaveCustomAddress(value) {
+            if (value.trim() !== "") {
+                customAddressText = value.trim();
+                activeAddressId = 'CUSTOM';
+                renderAddressButtons();
+                checkWorkflowTrigger();
+            }
+        }
+
+        function handleEditAddressTrigger() {
+            if (activeAddressId === 'CUSTOM') activeAddressId = null;
+            customAddressText = "";
+            renderAddressButtons();
+        }
+
+        function handleSelectAddress(id) {
+            if (activeAddressId === id) {
+                activeAddressId = null;
+            } else {
+                activeAddressId = id;
+            }
+            renderAddressButtons();
+            checkWorkflowTrigger();
+        }
+
+        function checkWorkflowTrigger() {
+            if (activeMenuId !== null && activeAddressId !== null) {
+                const selectedMenu = menuState.find(m => m.id === activeMenuId);
+                const selectedAddressText = (activeAddressId === 'CUSTOM') ? customAddressText : activeAddressId;
+
+                document.getElementById('inputModalLabel').innerText = `Tambah Pesanan: ${selectedMenu.text} (${selectedAddressText})`;
+                bootstrapInputModal.show();
+            }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const nameInput = document.getElementById('customer-name');
+            const qtyInput = document.getElementById('order-qty');
+
+            const selectedMenu = menuState.find(m => m.id === activeMenuId);
+            const selectedAddressText = (activeAddressId === 'CUSTOM') ? customAddressText : activeAddressId;
+
+            const newOrder = {
+                id: Date.now(),
+                nama: nameInput.value.trim(),
+                menu: selectedMenu.text,
+                alamat: selectedAddressText,
+                jumlah: parseInt(qtyInput.value, 10),
+                timestamp: new Date().toLocaleString('id-ID')
+            };
+
+            ordersState.push(newOrder);
+            saveOrdersToStorage();
+
+            nameInput.value = "";
+            qtyInput.value = "1";
+
+            bootstrapInputModal.hide();
+            renderOrderList();
+        }
+
+        // ==========================================
+        // 6. LOGIKA RENDER & UTILITY TABEL PESANAN
+        // ==========================================
+        function getAddressWeight(addressText) {
+            if (addressText === 'SD') return 1;
+            if (addressText === 'SMP') return 2;
+            if (addressText === 'SMA') return 3;
+            return 4;
+        }
+
+        function renderOrderList() {
+            const tableBody = document.querySelector('#order-list-container table tbody');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (tableBody) tableBody.innerHTML = '';
+
+            if (ordersState.length === 0) {
+                emptyState.classList.remove('d-none');
+                return;
+            } else {
+                emptyState.classList.add('d-none');
+            }
+
+            let displayOrders = [...ordersState];
+
+            if (addressSortOrder !== 'none') {
+                displayOrders.sort((a, b) => {
+                    const weightA = getAddressWeight(a.alamat);
+                    const weightB = getAddressWeight(b.alamat);
+                    return addressSortOrder === 'asc' ? weightA - weightB : weightB - weightA;
+                });
+            }
+
+            let tbody = document.querySelector('#order-list-container table tbody');
+            if (!tbody) {
+                tbody = document.createElement('tbody');
+                document.querySelector('#order-list-container table').appendChild(tbody);
+            }
+
+            displayOrders.forEach((order, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${order.nama}</strong></td>
+                    <td><span class="badge bg-primary">${order.menu}</span></td>
+                    <td><span class="badge bg-success">${order.alamat}</span></td>
+                    <td class="text-center">${order.jumlah}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-danger p-1" onclick="deleteOrder(${order.id})">
+                            <i class="bi bi-trash-fill" style="font-size: 13px;"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const sortIcon = document.querySelector('#btn-sort-address i');
+            if (addressSortOrder === 'none') {
+                sortIcon.className = 'bi bi-arrow-down-up text-muted';
+            } else if (addressSortOrder === 'asc') {
+                sortIcon.className = 'bi bi-sort-numeric-down text-dark fw-bold';
+            } else {
+                sortIcon.className = 'bi bi-sort-numeric-up-alt text-dark fw-bold';
+            }
+        }
+
+        function toggleAddressSort() {
+            if (addressSortOrder === 'none') {
+                addressSortOrder = 'asc';
+            } else if (addressSortOrder === 'asc') {
+                addressSortOrder = 'desc';
+            } else {
+                addressSortOrder = 'none';
+            }
+            renderOrderList();
+        }
+
+        window.deleteOrder = function(id) {
+            if (confirm("Apakah kamu yakin ingin menghapus baris pesanan ini?")) {
+                ordersState = ordersState.filter(order => order.id !== id);
+                saveOrdersToStorage();
+                renderOrderList();
+            }
+        }
+
+        // ==========================================
+        // 7. BARU: FITUR SALIN TEXT & RESET GLOBAL
+        // ==========================================
+
+        // Fungsi menyalin teks dengan format WhatsApp yang cantik
+        function handleCopyOrders() {
+            if (ordersState.length === 0) {
+                alert("Tidak ada data pesanan yang bisa disalin.");
+                return;
+            }
+
+            // Judul teks salinan
+            let textResult = "*📋 RINGKASAN DAFTAR PESANAN*\n";
+            textResult += "=========================\n\n";
+
+            // Kelompokkan data pesanan berdasarkan Alamat agar membacanya mudah
+            const groupedByAddress = {};
+            ordersState.forEach(order => {
+                if (!groupedByAddress[order.alamat]) {
+                    groupedByAddress[order.alamat] = [];
+                }
+                groupedByAddress[order.alamat].push(order);
+            });
+
+            // Iterasi tiap kelompok alamat untuk disusun menjadi teks string
+            for (const address in groupedByAddress) {
+                textResult += `📍 *Alamat/Tujuan: ${address}*\n`;
+                
+                groupedByAddress[address].forEach((item, idx) => {
+                    textResult += `  ${idx + 1}. ${item.nama} -> *${item.menu}* (${item.jumlah} porsi)\n`;
+                });
+                textResult += "\n";
+            }
+
+            textResult += `_Terakhir diperbarui: ${new Date().toLocaleString('id-ID')}_`;
+
+            // Gunakan Clipboard API bawaan browser untuk melakukan proses copy
+            navigator.clipboard.writeText(textResult).then(() => {
+                alert("🎉 Ringkasan pesanan berhasil disalin ke clipboard! Siap di-paste ke WhatsApp.");
+            }).catch(err => {
+                console.error("Gagal menyalin teks: ", err);
+                alert("Maaf, terjadi kesalahan saat menyalin teks.");
+            });
+        }
+
+        // Fungsi membersihkan seluruh data transaksi dan form pilihan
+        function handleGlobalReset() {
+            if (confirm("⚠️ PERINGATAN: Apakah kamu yakin ingin menghapus SEMUA daftar pesanan dan mereset pilihan? (Data nama menu tidak akan hilang)")) {
+                // Bersihkan data pesanan
+                ordersState = [];
+                saveOrdersToStorage();
+
+                // Kembalikan status tombol pilihan ke kondisi awal
+                activeMenuId = null;
+                activeAddressId = null;
+
+                // Render ulang semua komponen visual
+                renderMenuButtons();
+                renderAddressButtons();
+                renderOrderList();
+
+                alert("Semua data pesanan berhasil dibersihkan.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
