@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Daftar Pesanan JadiJajan</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍱</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
@@ -54,6 +55,13 @@
                 135deg,
                 #60a5fa,
                 #818cf8
+            );
+            
+        --gradient-warning:
+            linear-gradient(
+                135deg,
+                #f6d365,
+                #fda085
             );
     }
 
@@ -346,6 +354,16 @@
         border: none;
         background: var(--gradient-success);
     }
+    
+    .btn-warning {
+        border: none;
+        background: var(--gradient-warning);
+        color: #374151;
+    }
+    
+    .btn-warning:hover {
+        color: #212529;
+    }
 
     .btn-outline-secondary {
         background: rgba(255,255,255,.25);
@@ -394,6 +412,7 @@
     }
 
     #menu-buttons input,
+    #topping-buttons input,
     #address-buttons input {
         background: rgba(255,255,255,.55);
         backdrop-filter: blur(10px);
@@ -462,6 +481,11 @@
 
     .bg-success {
         background: var(--gradient-success) !important;
+    }
+    
+    .bg-warning {
+        background: var(--gradient-warning) !important;
+        color: #374151 !important;
     }
 
     /* ==================================================
@@ -573,16 +597,12 @@
 </head>
 <body>
 
-<body>
-
-    <!-- Floating Background -->
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
     <div class="bg-orb orb-3"></div>
 
     <div class="container py-5 position-relative" style="max-width: 900px;">
 
-        <!-- Header -->
         <div class="floating-header mb-4">
             <div>
                 <h1 class="mb-1">🍱 JadiJajan</h1>
@@ -597,7 +617,6 @@
             </div>
         </div>
 
-        <!-- Menu -->
         <div id="menu-bar-container" class="component-box">
             <div class="section-title">
                 <div class="section-icon">
@@ -619,7 +638,27 @@
             </div>
         </div>
 
-        <!-- Alamat -->
+        <div id="topping-bar-container" class="component-box">
+            <div class="section-title">
+                <div class="section-icon">
+                    <i class="bi bi-fire"></i>
+                </div>
+
+                <div>
+                    <h5 class="mb-0">Pilihan Topping</h5>
+                    <small class="text-muted">
+                        Pilih jenis saus atau topping pelengkap jajanan.
+                    </small>
+                </div>
+            </div>
+
+            <hr class="glass-divider">
+
+            <div id="topping-buttons" class="d-flex flex-wrap gap-2">
+                <span class="text-muted">Memuat topping...</span>
+            </div>
+        </div>
+
         <div id="address-bar-container" class="component-box">
             <div class="section-title">
                 <div class="section-icon">
@@ -627,7 +666,7 @@
                 </div>
 
                 <div>
-                    <h5 class="mb-0">Alamat / Jenjang</h5>
+                    <h5 class="mb-0">Alamat</h5>
                     <small class="text-muted">
                         Pilih alamat tujuan pengiriman.
                     </small>
@@ -641,7 +680,6 @@
             </div>
         </div>
 
-        <!-- Daftar Pesanan -->
         <div id="order-list-container" class="component-box">
 
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
@@ -687,9 +725,10 @@
 
                         <thead>
                             <tr>
-                                <th style="width:60px">No</th>
+                                <th style="width:50px">No</th>
                                 <th>Nama</th>
                                 <th>Menu</th>
+                                <th>Topping</th>
 
                                 <th>
                                     Alamat
@@ -732,7 +771,6 @@
 
     </div>
 
-    <!-- Modal -->
     <div class="modal fade"
         id="inputModal"
         data-bs-backdrop="static"
@@ -849,6 +887,15 @@
         let ordersState = [];
         let activeMenuId = null;
 
+        // State & data baru untuk Topping
+        const toppingData = [
+            { id: 'Saus Pedas', text: 'Saus Pedas' },
+            { id: 'Mayo Pedas', text: 'Mayo Pedas' },
+            { id: 'Mayo Ori', text: 'Mayo Ori' }
+        ];
+        let customToppingText = "";
+        let activeToppingId = null;
+
         const addressData = [
             { id: 'SD', text: 'SD' },
             { id: 'SMP', text: 'SMP' },
@@ -885,15 +932,14 @@
             const btnSortAddress = document.getElementById('btn-sort-address');
             btnSortAddress.addEventListener('click', toggleAddressSort);
 
-            // [ 5. Hubungkan Event Tombol Reset Global ]
             const btnReset = document.getElementById('btn-reset');
             btnReset.addEventListener('click', handleGlobalReset);
 
-            // [ 6. Hubungkan Event Tombol Salin Ringkasan ]
             const btnCopy = document.getElementById('btn-copy');
             btnCopy.addEventListener('click', handleCopyOrders);
 
             renderMenuButtons();
+            renderToppingButtons();
             renderAddressButtons();
             renderOrderList();
         }
@@ -987,6 +1033,92 @@
         }
 
         // ==========================================
+        // 3B. LOGIKA & RENDER TOMBOL TOPPING (BARU)
+        // ==========================================
+        function renderToppingButtons() {
+            const toppingContainer = document.getElementById('topping-buttons');
+            toppingContainer.innerHTML = '';
+
+            toppingData.forEach(top => {
+                const btn = document.createElement('button');
+                const isSelected = activeToppingId === top.id;
+                btn.className = `btn btn-sm me-2 mb-2 ${isSelected ? 'btn-warning' : 'btn-outline-secondary'}`;
+                btn.innerText = top.text;
+                
+                btn.addEventListener('click', () => handleSelectTopping(top.id));
+                toppingContainer.appendChild(btn);
+            });
+
+            const customWrapper = document.createElement('div');
+            customWrapper.className = 'd-inline-block position-relative mb-2';
+
+            if (customToppingText.trim() === "") {
+                const inputCustom = document.createElement('input');
+                inputCustom.type = 'text';
+                inputCustom.className = 'form-control form-control-sm text-center';
+                inputCustom.placeholder = '[+] Kustom Topping';
+                inputCustom.style.width = '140px';
+
+                inputCustom.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') handleSaveCustomTopping(inputCustom.value);
+                });
+                inputCustom.addEventListener('blur', () => {
+                    if (inputCustom.value.trim() !== "") handleSaveCustomTopping(inputCustom.value);
+                });
+
+                customWrapper.appendChild(inputCustom);
+            } else {
+                const btnCustom = document.createElement('button');
+                const isSelected = activeToppingId === 'CUSTOM';
+                btnCustom.className = `btn btn-sm text-start pe-5 ${isSelected ? 'btn-warning' : 'btn-outline-secondary'}`;
+                btnCustom.style.minWidth = '140px';
+                btnCustom.innerHTML = `<i class="bi bi-magic small me-2" style="font-size: 10px;"></i>${customToppingText}`;
+
+                btnCustom.addEventListener('click', () => handleSelectTopping('CUSTOM'));
+
+                const editIconCustom = document.createElement('span');
+                editIconCustom.className = `position-absolute top-50 end-0 translate-middle-y me-2 badge rounded-pill bg-light text-dark border`;
+                editIconCustom.style.cursor = 'pointer';
+                editIconCustom.innerHTML = '<i class="bi bi-pencil" style="font-size: 11px;"></i>';
+
+                editIconCustom.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleEditToppingTrigger();
+                });
+
+                customWrapper.appendChild(btnCustom);
+                customWrapper.appendChild(editIconCustom);
+            }
+
+            toppingContainer.appendChild(customWrapper);
+        }
+
+        function handleSaveCustomTopping(value) {
+            if (value.trim() !== "") {
+                customToppingText = value.trim();
+                activeToppingId = 'CUSTOM';
+                renderToppingButtons();
+                checkWorkflowTrigger();
+            }
+        }
+
+        function handleEditToppingTrigger() {
+            if (activeToppingId === 'CUSTOM') activeToppingId = null;
+            customToppingText = "";
+            renderToppingButtons();
+        }
+
+        function handleSelectTopping(id) {
+            if (activeToppingId === id) {
+                activeToppingId = null;
+            } else {
+                activeToppingId = id;
+            }
+            renderToppingButtons();
+            checkWorkflowTrigger();
+        }
+
+        // ==========================================
         // 4. LOGIKA & RENDER TOMBOL ALAMAT
         // ==========================================
         function renderAddressButtons() {
@@ -1072,12 +1204,14 @@
             checkWorkflowTrigger();
         }
 
+        // Trigger workflow disesuaikan dengan 3 parameter (Menu, Topping, Alamat)
         function checkWorkflowTrigger() {
-            if (activeMenuId !== null && activeAddressId !== null) {
+            if (activeMenuId !== null && activeToppingId !== null && activeAddressId !== null) {
                 const selectedMenu = menuState.find(m => m.id === activeMenuId);
+                const selectedToppingText = (activeToppingId === 'CUSTOM') ? customToppingText : activeToppingId;
                 const selectedAddressText = (activeAddressId === 'CUSTOM') ? customAddressText : activeAddressId;
 
-                document.getElementById('inputModalLabel').innerText = `Tambah Pesanan: ${selectedMenu.text} (${selectedAddressText})`;
+                document.getElementById('inputModalLabel').innerText = `Tambah Pesanan: ${selectedMenu.text} + ${selectedToppingText} (${selectedAddressText})`;
                 bootstrapInputModal.show();
             }
         }
@@ -1089,12 +1223,14 @@
             const qtyInput = document.getElementById('order-qty');
 
             const selectedMenu = menuState.find(m => m.id === activeMenuId);
+            const selectedToppingText = (activeToppingId === 'CUSTOM') ? customToppingText : activeToppingId;
             const selectedAddressText = (activeAddressId === 'CUSTOM') ? customAddressText : activeAddressId;
 
             const newOrder = {
                 id: Date.now(),
                 nama: nameInput.value.trim(),
                 menu: selectedMenu.text,
+                topping: selectedToppingText,
                 alamat: selectedAddressText,
                 jumlah: parseInt(qtyInput.value, 10),
                 timestamp: new Date().toLocaleString('id-ID')
@@ -1105,6 +1241,15 @@
 
             nameInput.value = "";
             qtyInput.value = "1";
+
+            // Kembalikan seleksi ke semula agar tidak looping membuka modal terus menerus
+            activeMenuId = null;
+            activeToppingId = null;
+            activeAddressId = null;
+
+            renderMenuButtons();
+            renderToppingButtons();
+            renderAddressButtons();
 
             bootstrapInputModal.hide();
             renderOrderList();
@@ -1123,8 +1268,10 @@
         function renderOrderList() {
             const tableBody = document.querySelector('#order-list-container table tbody');
             const emptyState = document.getElementById('empty-state');
+            const counterSpan = document.getElementById('order-counter');
             
             if (tableBody) tableBody.innerHTML = '';
+            counterSpan.innerText = `${ordersState.length} Pesanan`;
 
             if (ordersState.length === 0) {
                 emptyState.classList.remove('d-none');
@@ -1155,6 +1302,7 @@
                     <td>${index + 1}</td>
                     <td><strong>${order.nama}</strong></td>
                     <td><span class="badge bg-primary">${order.menu}</span></td>
+                    <td><span class="badge bg-warning">${order.topping || 'Tanpa Topping'}</span></td>
                     <td><span class="badge bg-success">${order.alamat}</span></td>
                     <td class="text-center">${order.jumlah}</td>
                     <td class="text-center">
@@ -1196,21 +1344,18 @@
         }
 
         // ==========================================
-        // 7. BARU: FITUR SALIN TEXT & RESET GLOBAL
+        // 7. FITUR SALIN TEXT & RESET GLOBAL
         // ==========================================
 
-        // Fungsi menyalin teks dengan format WhatsApp yang cantik
         function handleCopyOrders() {
             if (ordersState.length === 0) {
                 alert("Tidak ada data pesanan yang bisa disalin.");
                 return;
             }
 
-            // Judul teks salinan
             let textResult = "*📋 RINGKASAN DAFTAR PESANAN*\n";
             textResult += "=========================\n\n";
 
-            // Kelompokkan data pesanan berdasarkan Alamat agar membacanya mudah
             const groupedByAddress = {};
             ordersState.forEach(order => {
                 if (!groupedByAddress[order.alamat]) {
@@ -1219,40 +1364,36 @@
                 groupedByAddress[order.alamat].push(order);
             });
 
-            // Iterasi tiap kelompok alamat untuk disusun menjadi teks string
             for (const address in groupedByAddress) {
                 textResult += `📍 *Alamat/Tujuan: ${address}*\n`;
                 
                 groupedByAddress[address].forEach((item, idx) => {
-                    textResult += `  ${idx + 1}. ${item.nama} -> *${item.menu}* (${item.jumlah} porsi)\n`;
+                    textResult += `  ${idx + 1}. ${item.nama} -> *${item.menu}* [${item.topping || 'Ori'}] (${item.jumlah} porsi)\n`;
                 });
                 textResult += "\n";
             }
 
             textResult += `_Terakhir diperbarui: ${new Date().toLocaleString('id-ID')}_`;
 
-            // Gunakan Clipboard API bawaan browser untuk melakukan proses copy
             navigator.clipboard.writeText(textResult).then(() => {
-                alert("🎉 Ringkasan pesanan berhasil disalin ke clipboard! Siap di-paste ke WhatsApp.");
+                alert("✨ Ringkasan pesanan berhasil disalin ke clipboard! Siap di-paste ke WhatsApp.");
             }).catch(err => {
                 console.error("Gagal menyalin teks: ", err);
                 alert("Maaf, terjadi kesalahan saat menyalin teks.");
             });
         }
 
-        // Fungsi membersihkan seluruh data transaksi dan form pilihan
         function handleGlobalReset() {
             if (confirm("⚠️ PERINGATAN: Apakah kamu yakin ingin menghapus SEMUA daftar pesanan dan mereset pilihan? (Data nama menu tidak akan hilang)")) {
-                // Bersihkan data pesanan
                 ordersState = [];
                 saveOrdersToStorage();
 
-                // Kembalikan status tombol pilihan ke kondisi awal
                 activeMenuId = null;
+                activeToppingId = null;
                 activeAddressId = null;
 
-                // Render ulang semua komponen visual
                 renderMenuButtons();
+                renderToppingButtons();
                 renderAddressButtons();
                 renderOrderList();
 
